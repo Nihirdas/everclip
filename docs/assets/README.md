@@ -2,12 +2,12 @@
 
 - `favicon.svg` — site icon.
 - `og.svg` — social/preview banner, also used as the README header.
+- `demo.svg` — animated demo of the EverClip interface (search → filter → select →
+  paste). Self-contained SMIL animation; used on the landing page and in the README.
 
-## To add after the first build
+## Optional additions
 
-- `demo.gif` — a short screen recording of opening EverClip (⌥⌘V), searching, and
-  pasting back. Reference it from the README and, optionally, the landing page’s
-  “screenshot” slot in `index.html`.
-- `screenshot.png` — a still of the panel in dark mode.
-
-Keep recordings small (≤ ~3 MB) so the page stays fast.
+- `screenshot.png` — a still of the real panel in dark mode, once a signed build is
+  running on a machine with Xcode.
+- If a raw `.gif` is ever needed (for surfaces that don't animate SVG), record the
+  running app or export frames from `demo.svg`.

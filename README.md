@@ -19,6 +19,12 @@
 
 ---
 
+## Demo
+
+![EverClip — searching the clipboard history and pasting an item back](docs/assets/demo.svg)
+
+<sub>Animated preview of the interface (search → filter → select → paste).</sub>
+
 ## Why
 
 The macOS clipboard holds exactly one thing. The moment you copy again, whatever
