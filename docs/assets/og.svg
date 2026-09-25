@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0c10"/>
+      <stop offset="1" stop-color="#14161d"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6a78f7"/>
+      <stop offset="1" stop-color="#8b6cf0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="20%" cy="0%" r="70%">
+      <stop offset="0" stop-color="#6a78f7" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#6a78f7" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <g transform="translate(96,150)">
+    <rect x="0" y="0" width="96" height="96" rx="24" fill="url(#mark)"/>
+    <g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(24,20)">
+      <rect x="10" y="0" width="28" height="13" rx="3.5"/>
+      <path d="M38 6h6a6 6 0 0 1 6 6v40a6 6 0 0 1-6 6H4a6 6 0 0 1-6-6V12a6 6 0 0 1 6-6h6"/>
+      <path d="M6 30h30M6 42h20"/>
+    </g>
+  </g>
+  <text x="96" y="330" fill="#eef0f6" font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="76" font-weight="700" letter-spacing="-2">Your clipboard,</text>
+  <text x="96" y="410" fill="#8b8ff5" font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="76" font-weight="700" letter-spacing="-2">private and permanent.</text>
+  <text x="96" y="480" fill="#9aa3b2" font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="34" font-weight="400">Local-first clipboard manager for macOS · EverClip</text>
+</svg>

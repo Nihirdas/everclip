@@ -1,0 +1,24 @@
+# SwiftPM / build output
+.build/
+build/
+DerivedData/
+*.o
+*.swiftmodule
+
+# Xcode
+*.xcuserstate
+xcuserdata/
+.swiftpm/xcode/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# macOS
+.DS_Store
+
+# App runtime data (should never be committed)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Editor
+.idea/
+*.swp

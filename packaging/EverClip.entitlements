@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      EverClip is intentionally NOT sandboxed: it needs to read the system
+      pasteboard, register a global hotkey, and synthesize a paste keystroke.
+      These entitlements suit a hardened-runtime Developer ID build. For a local
+      dev build the build script ad-hoc signs without entitlements, which is fine.
+    -->
+    <key>com.apple.security.app-sandbox</key>
+    <false/>
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+</dict>
+</plist>
