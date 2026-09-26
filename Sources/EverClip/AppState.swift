@@ -4,7 +4,9 @@ import EverClipCore
 /// Observable UI state. Owns the currently displayed list and mediates every
 /// action the panel can take, delegating side effects (paste, close, open
 /// settings) back to `AppDelegate` via closures.
-@MainActor
+///
+/// Only ever used on the main thread (AppKit callbacks and SwiftUI), so it is
+/// left non-isolated to interoperate cleanly with the non-isolated AppKit glue.
 final class AppState: ObservableObject {
     enum Tab: String { case recent, favorites }
 

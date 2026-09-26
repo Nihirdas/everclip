@@ -4,7 +4,7 @@ import EverClipCore
 
 /// Observable wrapper around `SettingsStore` for the settings window. Any change to
 /// `settings` is persisted and re-applied to the running app via `onApply`.
-@MainActor
+/// Used only on the main thread; left non-isolated to match the AppKit glue.
 final class SettingsModel: ObservableObject {
     private let store: SettingsStore
     @Published var settings: AppSettings {
