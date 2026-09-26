@@ -85,9 +85,13 @@ private struct GeneralSettings: View {
 
             Section("Shortcut") {
                 LabeledContent("Open EverClip") {
-                    Text("⌥⌘V").font(.system(.body, design: .monospaced))
+                    HotKeyRecorder(hotKey: $model.settings.hotKey)
+                        .frame(width: 140, height: 26)
+                        .disabled(!model.settings.hotKey.isEnabled)
                 }
                 Toggle("Enable global shortcut", isOn: $model.settings.hotKey.isEnabled)
+                Text("Click the shortcut, then press a new combination (must include ⌘, ⌥, or ⌃). Esc cancels.")
+                    .font(.caption).foregroundStyle(.secondary)
                 Button("Grant Accessibility permission…", action: onRequestAccessibility)
                     .help("Required so EverClip can paste into other apps.")
             }

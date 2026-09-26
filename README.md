@@ -71,11 +71,26 @@ a keystroke — while keeping your data on your own machine.
 
 ## Install
 
+### Download (no Xcode needed)
+
+Grab the latest **EverClip.zip** from the
+[Releases page](https://github.com/Nihirdas/everclip/releases/latest), unzip, and drag
+`EverClip.app` into `Applications`.
+
+Because this is an open-source, ad-hoc-signed build, macOS Gatekeeper will warn on the
+first launch. Either **right-click → Open → Open**, or clear the quarantine flag once:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/EverClip.app
+```
+
+Requires macOS 13+ (Apple Silicon).
+
+### Build from source
+
 > **Build requirement:** a full **Xcode 15+** toolchain on **macOS 13+**. The app’s
 > UI is SwiftUI, whose compiler macros ship with Xcode (the standalone Command Line
 > Tools are enough for the core library and tests, but not the app).
-
-### Build from source
 
 ```bash
 git clone https://github.com/Nihirdas/everclip.git

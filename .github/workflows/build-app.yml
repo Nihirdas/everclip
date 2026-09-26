@@ -8,6 +8,9 @@ on:
   push:
     tags: [ "v*" ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build EverClip.app
@@ -37,3 +40,25 @@ jobs:
           name: EverClip-app
           path: build/EverClip.zip
           if-no-files-found: error
+
+      - name: Publish release (on version tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/EverClip.zip
+          name: EverClip ${{ github.ref_name }}
+          body: |
+            EverClip ${{ github.ref_name }} — a local-first clipboard manager for macOS.
+
+            ## Install
+            1. Download **EverClip.zip** below and double-click to unzip.
+            2. Drag **EverClip.app** into your `Applications` folder.
+            3. **First launch** (this build is open-source and ad-hoc signed, so macOS Gatekeeper will warn):
+               right-click **EverClip.app → Open → Open**. If it still refuses, run once:
+               ```
+               xattr -dr com.apple.quarantine /Applications/EverClip.app
+               ```
+            4. It lives in the menu bar. Press **⌥⌘V** to open it (customizable in Settings).
+            5. For paste-back, grant **Accessibility** in System Settings → Privacy & Security → Accessibility.
+
+            Requires macOS 13+ (Apple Silicon).
