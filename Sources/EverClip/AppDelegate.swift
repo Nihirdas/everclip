@@ -61,6 +61,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appState.onActivateItem = { [weak self] item in self?.activateAndPaste(item) }
         appState.onOpenSettings = { [weak self] in self?.openSettings() }
         appState.onRequestClose = { [weak self] in self?.panelController.hide() }
+        appState.onFixAccessibility = { [weak self] in self?.requestAccessibility() }
+    }
+
+    /// Prompts for Accessibility and opens the relevant settings pane.
+    private func requestAccessibility() {
+        _ = PasteService.hasAccessibilityPermission(prompt: true)
+        PasteService.openAccessibilitySettings()
     }
 
     private func setUpStatusItem() {
@@ -130,21 +137,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Paste-back
 
     private func activateAndPaste(_ item: ClipItem) {
+        // Always put the item on the clipboard and return focus to the previous app.
         ClipboardWriter.write(item, store: store)
         let target = panelController.previousApp
         panelController.hide()
-
-        let shouldPaste = settingsStore.settings.pasteOnSelect
         target?.activate()
 
-        guard shouldPaste else { return }
-        if PasteService.hasAccessibilityPermission(prompt: false) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
-                PasteService.pasteToFrontmostApp()
-            }
-        } else {
-            // Content is on the clipboard; user can paste manually. Nudge once.
-            _ = PasteService.hasAccessibilityPermission(prompt: true)
+        guard settingsStore.settings.pasteOnSelect else { return }
+
+        // Only synthesize ⌘V when we actually hold Accessibility. We never fire the
+        // system prompt here — that caused the repeated popups. The in-panel banner
+        // and Settings button are the single place that asks for permission.
+        guard PasteService.hasAccessibilityPermission(prompt: false) else {
+            appState.pasteBackAvailable = false
+            return
+        }
+        appState.pasteBackAvailable = true
+        // Give the previous app a moment to come frontmost before pasting.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+            PasteService.pasteToFrontmostApp()
         }
     }
 
@@ -164,7 +175,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 appVersion: Self.appVersion,
                 onExportNow: { [weak self] in self?.backupNow() },
                 onPruneNow: { [weak self] in self?.pruneNow() },
-                onRequestAccessibility: { _ = PasteService.hasAccessibilityPermission(prompt: true) }
+                onRequestAccessibility: { [weak self] in self?.requestAccessibility() }
             )
             let window = NSWindow(
                 contentRect: NSRect(x: 0, y: 0, width: 480, height: 430),

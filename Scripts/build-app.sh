@@ -41,8 +41,17 @@ if [[ -f packaging/AppIcon.icns ]]; then
     cp packaging/AppIcon.icns "${APP}/Contents/Resources/AppIcon.icns"
 fi
 
-echo "==> Ad-hoc signing"
-codesign --force --deep --sign - "${APP}" >/dev/null 2>&1 || echo "  (ad-hoc signing skipped)"
+# Prefer a stable signing identity (so the macOS Accessibility grant persists
+# across rebuilds). Set EVERCLIP_SIGN_IDENTITY to a code-signing identity name;
+# otherwise fall back to ad-hoc (fine for CI / first installs).
+SIGN_ID="${EVERCLIP_SIGN_IDENTITY:-}"
+if [[ -n "${SIGN_ID}" ]] && security find-identity -v -p codesigning 2>/dev/null | grep -q "${SIGN_ID}"; then
+    echo "==> Signing with identity: ${SIGN_ID}"
+    codesign --force --deep --sign "${SIGN_ID}" "${APP}"
+else
+    echo "==> Ad-hoc signing"
+    codesign --force --deep --sign - "${APP}" >/dev/null 2>&1 || echo "  (ad-hoc signing skipped)"
+fi
 
 echo "OK: built ${APP}"
 echo "Run it with: open \"${APP}\""

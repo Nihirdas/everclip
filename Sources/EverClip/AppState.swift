@@ -21,10 +21,15 @@ final class AppState: ObservableObject {
     @Published var selectionID: Int64?
     @Published var isPaused: Bool
     @Published var totalCount: Int = 0
+    /// Whether EverClip currently has the Accessibility permission needed to
+    /// auto-paste into the previous app. Drives the "enable paste-back" banner.
+    @Published var pasteBackAvailable: Bool = true
 
     var onActivateItem: ((ClipItem) -> Void)?
     var onOpenSettings: (() -> Void)?
     var onRequestClose: (() -> Void)?
+    /// Asks AppDelegate to help the user grant Accessibility (prompt + open settings).
+    var onFixAccessibility: (() -> Void)?
 
     init(store: ClipStore, settingsStore: SettingsStore) {
         self.store = store
@@ -68,6 +73,11 @@ final class AppState: ObservableObject {
     }
 
     func handleCapture() { reload() }
+
+    /// Re-checks whether paste-back is available (called when the panel opens).
+    func refreshPermissions() {
+        pasteBackAvailable = PasteService.hasAccessibilityPermission(prompt: false)
+    }
 
     func selectTab(_ tab: Tab) {
         guard tab != selectedTab else { return }

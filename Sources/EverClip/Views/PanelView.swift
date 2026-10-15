@@ -24,6 +24,10 @@ struct PanelView: View {
             tabBar
             Divider().opacity(0.4)
 
+            if !appState.pasteBackAvailable {
+                pasteBackBanner
+            }
+
             content
 
             Divider().opacity(0.4)
@@ -38,6 +42,7 @@ struct PanelView: View {
         )
         .onAppear {
             appState.reload()
+            appState.refreshPermissions()
             DispatchQueue.main.async { searchFocused = true }
         }
     }
@@ -118,6 +123,33 @@ struct PanelView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
+    }
+
+    // MARK: Paste-back banner
+
+    private var pasteBackBanner: some View {
+        Button {
+            appState.onFixAccessibility?()
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.orange)
+                Text("Paste-back is off — grant Accessibility to paste on click")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.primary)
+                Spacer(minLength: 2)
+                Text("Fix")
+                    .font(.system(size: 10.5, weight: .semibold))
+                    .foregroundStyle(Theme.accent)
+                Image(systemName: "chevron.right").font(.system(size: 9)).foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(Color.orange.opacity(0.12))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: Content
