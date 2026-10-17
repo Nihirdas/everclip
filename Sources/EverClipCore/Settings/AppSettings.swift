@@ -113,6 +113,9 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var pasteOnSelect: Bool
     /// Preferred appearance: nil = follow system.
     public var forcedDarkMode: Bool?
+    /// When false (default), the panel always opens to Recent with the newest item
+    /// on top. When true, it restores the last tab/scroll where you left off.
+    public var restoreLastPosition: Bool
 
     public init(
         pollingIntervalMilliseconds: Int = 300,
@@ -124,7 +127,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         hotKey: HotKeyConfig = .defaultHotKey,
         export: ExportSettings = .disabled,
         pasteOnSelect: Bool = true,
-        forcedDarkMode: Bool? = nil
+        forcedDarkMode: Bool? = nil,
+        restoreLastPosition: Bool = false
     ) {
         self.pollingIntervalMilliseconds = pollingIntervalMilliseconds
         self.retention = retention
@@ -136,7 +140,26 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.export = export
         self.pasteOnSelect = pasteOnSelect
         self.forcedDarkMode = forcedDarkMode
+        self.restoreLastPosition = restoreLastPosition
     }
 
     public static let `default` = AppSettings()
+
+    /// Tolerant decoding: any key missing from an older settings file falls back to
+    /// its default, so adding new settings never discards a user's existing config.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let d = AppSettings.default
+        pollingIntervalMilliseconds = try c.decodeIfPresent(Int.self, forKey: .pollingIntervalMilliseconds) ?? d.pollingIntervalMilliseconds
+        retention = try c.decodeIfPresent(RetentionPolicy.self, forKey: .retention) ?? d.retention
+        excludedBundleIDs = try c.decodeIfPresent([String].self, forKey: .excludedBundleIDs) ?? d.excludedBundleIDs
+        isPaused = try c.decodeIfPresent(Bool.self, forKey: .isPaused) ?? d.isPaused
+        launchAtLogin = try c.decodeIfPresent(Bool.self, forKey: .launchAtLogin) ?? d.launchAtLogin
+        topStripCount = try c.decodeIfPresent(Int.self, forKey: .topStripCount) ?? d.topStripCount
+        hotKey = try c.decodeIfPresent(HotKeyConfig.self, forKey: .hotKey) ?? d.hotKey
+        export = try c.decodeIfPresent(ExportSettings.self, forKey: .export) ?? d.export
+        pasteOnSelect = try c.decodeIfPresent(Bool.self, forKey: .pasteOnSelect) ?? d.pasteOnSelect
+        forcedDarkMode = try c.decodeIfPresent(Bool.self, forKey: .forcedDarkMode)
+        restoreLastPosition = try c.decodeIfPresent(Bool.self, forKey: .restoreLastPosition) ?? d.restoreLastPosition
+    }
 }

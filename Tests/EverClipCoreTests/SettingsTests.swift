@@ -28,6 +28,26 @@ import Foundation
         #expect(restored == settings)
     }
 
+    @Test func restoreLastPositionDefaultsOff() {
+        #expect(!AppSettings.default.restoreLastPosition)
+    }
+
+    @Test func tolerantDecodeFillsMissingKeys() throws {
+        // An older settings file that predates several fields must still load,
+        // keeping its known values and defaulting the rest.
+        let json = """
+        { "pollingIntervalMilliseconds": 500, "excludedBundleIDs": ["com.apple.Safari"] }
+        """
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let settings = try decoder.decode(AppSettings.self, from: Data(json.utf8))
+        #expect(settings.pollingIntervalMilliseconds == 500)
+        #expect(settings.excludedBundleIDs == ["com.apple.Safari"])
+        #expect(settings.topStripCount == 10)        // defaulted
+        #expect(!settings.restoreLastPosition)        // defaulted
+        #expect(settings.hotKey == .defaultHotKey)    // defaulted
+    }
+
     @Test func settingsStorePersists() throws {
         let dir = TestSupport.makeTempDir()
         defer { TestSupport.remove(dir) }

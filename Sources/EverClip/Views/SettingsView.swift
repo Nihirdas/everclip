@@ -63,6 +63,11 @@ private struct GeneralSettings: View {
             Section {
                 Toggle("Launch EverClip at login", isOn: $model.settings.launchAtLogin)
                 Toggle("Paste automatically after selecting", isOn: $model.settings.pasteOnSelect)
+                Toggle("Remember where I left off", isOn: $model.settings.restoreLastPosition)
+                Text(model.settings.restoreLastPosition
+                     ? "EverClip reopens to your last tab and scroll position."
+                     : "EverClip always opens to Recent with the newest item on top.")
+                    .font(.caption).foregroundStyle(.secondary)
             }
 
             Section("Appearance") {

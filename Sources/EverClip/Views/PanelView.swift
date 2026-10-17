@@ -45,6 +45,9 @@ struct PanelView: View {
             appState.refreshPermissions()
             DispatchQueue.main.async { searchFocused = true }
         }
+        .onChange(of: appState.openToken) { _ in
+            DispatchQueue.main.async { searchFocused = true }
+        }
     }
 
     // MARK: Header
@@ -181,6 +184,11 @@ struct PanelView: View {
                         // `id` stays Int64? to match each row's `.id(item.id)` identity.
                         guard id != nil else { return }
                         withAnimation(.easeOut(duration: 0.12)) { proxy.scrollTo(id, anchor: .center) }
+                    }
+                    .onChange(of: appState.scrollTopToken) { _ in
+                        // Reset-to-Home: jump the list back to the newest item.
+                        guard let topID = appState.items.first?.id else { return }
+                        DispatchQueue.main.async { proxy.scrollTo(topID, anchor: .top) }
                     }
                 }
             }

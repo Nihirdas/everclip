@@ -24,6 +24,12 @@ final class AppState: ObservableObject {
     /// Whether EverClip currently has the Accessibility permission needed to
     /// auto-paste into the previous app. Drives the "enable paste-back" banner.
     @Published var pasteBackAvailable: Bool = true
+    /// Bumped each time the panel opens — the view focuses the search field.
+    @Published var openToken: Int = 0
+    /// Bumped when the list should scroll back to the top (on reset-to-Home).
+    @Published var scrollTopToken: Int = 0
+
+    private let lastTabKey = "everclip.lastTab"
 
     var onActivateItem: ((ClipItem) -> Void)?
     var onOpenSettings: (() -> Void)?
@@ -35,7 +41,30 @@ final class AppState: ObservableObject {
         self.store = store
         self.settingsStore = settingsStore
         self.isPaused = settingsStore.settings.isPaused
+        // Restore the last tab across relaunch only when the user opted in.
+        if settingsStore.settings.restoreLastPosition,
+           let raw = UserDefaults.standard.string(forKey: lastTabKey),
+           let tab = Tab(rawValue: raw) {
+            self.selectedTab = tab
+        }
         reload()
+    }
+
+    /// Called every time the panel is shown. By default it resets to Home (Recent,
+    /// newest on top); with "remember where I left off" it keeps the last position.
+    func panelWillOpen() {
+        refreshPermissions()
+        if settingsStore.settings.restoreLastPosition {
+            reload()
+        } else {
+            selectedTab = .recent
+            searchText = ""
+            typeFilter = nil
+            reload()
+            selectionID = items.first?.id
+            scrollTopToken &+= 1
+        }
+        openToken &+= 1
     }
 
     var showTopStrip: Bool {
@@ -83,6 +112,7 @@ final class AppState: ObservableObject {
         guard tab != selectedTab else { return }
         selectedTab = tab
         selectionID = nil
+        UserDefaults.standard.set(tab.rawValue, forKey: lastTabKey)
         reload()
     }
 

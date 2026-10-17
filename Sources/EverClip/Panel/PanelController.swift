@@ -46,6 +46,7 @@ final class PanelController {
 
     func show(relativeTo button: NSStatusBarButton?) {
         previousApp = NSWorkspace.shared.frontmostApplication
+        appState.panelWillOpen()
         position(relativeTo: button)
         NSApp.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)
