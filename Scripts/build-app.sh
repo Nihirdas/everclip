@@ -9,8 +9,8 @@ set -euo pipefail
 
 CONFIG="${1:-release}"
 APP_NAME="EverClip"
-VERSION="0.1.0"
-BUILD_NUMBER="1"
+VERSION="0.1.1"
+BUILD_NUMBER="2"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
